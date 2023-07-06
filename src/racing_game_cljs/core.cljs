@@ -1,10 +1,11 @@
 (ns racing-game-cljs.core
   (:require
-    [racing-game-cljs.config :as config]
-    [racing-game-cljs.events :as events]
-    [racing-game-cljs.views :as views]
-    [re-frame.core :as re-frame]
-    [reagent.dom :as rdom]))
+   [racing-game-cljs.config :as config]
+   [racing-game-cljs.events :as events]
+   [racing-game-cljs.views :as views]
+   [re-frame.core :as re-frame]
+   [reagent.dom :as rdom]
+   [racing-game-cljs.parenoia.view :as parenoia]))
 
 (defn dev-setup
   []
@@ -16,7 +17,7 @@
   (re-frame/clear-subscription-cache!)
   (let [root-el (.getElementById js/document "app")]
     (rdom/unmount-component-at-node root-el)
-    (rdom/render [views/main-panel] root-el)))
+    (rdom/render [parenoia/view] root-el)))
 
 (defn init
   []

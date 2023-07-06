@@ -1,18 +1,18 @@
 (ns racing-game-cljs.views
   (:require
-    ["regenerator-runtime"]
-    ["@react-three/cannon" :refer [Physics usePlane useBox useCylinder useRaycastVehicle]]
-    ["@react-three/drei" :refer [useGLTF Sky Environment PerspectiveCamera]]
-    ["@react-three/fiber" :refer [Canvas useFrame]]
-    ["react" :refer [useRef Suspense]]
-    ["three" :as THREE]
-    [applied-science.js-interop :as j]
-    [clojure.string :as str]
-    [goog.object :as ob]
-    [racing-game-cljs.events :as events]
-    [racing-game-cljs.subs :as subs]
-    [re-frame.core :refer [dispatch subscribe]]
-    [reagent.core :as r]))
+   ["regenerator-runtime"]
+   ["@react-three/cannon" :refer [Physics usePlane useBox useCylinder useRaycastVehicle]]
+   ["@react-three/drei" :refer [useGLTF Sky Environment PerspectiveCamera]]
+   ["@react-three/fiber" :refer [Canvas useFrame]]
+   ["react" :refer [useRef Suspense]]
+   ["three" :as THREE]
+   [applied-science.js-interop :as j]
+   [clojure.string :as str]
+   [goog.object :as ob]
+   [racing-game-cljs.events :as events]
+   [racing-game-cljs.subs :as subs]
+   [re-frame.core :refer [dispatch subscribe]]
+   [reagent.core :as r]))
 
 (def canvas (r/adapt-react-class Canvas))
 (def sky (r/adapt-react-class Sky))
@@ -67,25 +67,10 @@
        :position [-100 80 -100]}]
      (when @light [:primitive {:object (.-target @light)}])
      [:group {:position [0 0 0] :scale [0.35 0.35 2.2]}
-      [:group {:rotation [(/ (- js/Math.PI) 2) 0 0]}
-       [:group {:rotation [(/ js/Math.PI 2) 0 0]}
-        [:mesh
-         {:castShadow true
-          :receiveShadow true
-          :geometry (j/get-in nodes [:Mesh_0 :geometry])
-          :material (j/assoc! (j/get materials "Material.001")
-                              :color #js {:r 0.7454042095350284 :g 0.43415363616478553 :b 0.02955683443236377})}]
-        [:mesh {:geometry (j/get-in nodes [:Mesh_1 :geometry]) :material (j/get-in nodes [:Mesh_1 :material])}]
-        [:mesh
-         {:castShadow true
-          :geometry (j/get-in nodes [:Mesh_2 :geometry])
-          :material (j/assoc! (j/get materials "Material.003") :color #js {:r 0 :g 0 :b 0})}]
-        [:mesh {:geometry (j/get-in nodes [:Mesh_3 :geometry]) :material (j/assoc! (j/get materials "Material.004")
-                                                                                   :color #js {:r 1 :g 1 :b 1})}]
-        [:mesh {:geometry (j/get-in nodes [:Mesh_4 :geometry]) :material (j/get materials "Material.005")}]
-        [:mesh {:geometry (j/get-in nodes [:Mesh_5 :geometry]) :material (j/get materials "Material.006")}]
-        [:mesh {:geometry (j/get-in nodes [:Mesh_6 :geometry]) :material (j/get-in nodes [:Mesh_6 :material])}]
-        [:mesh {:geometry (j/get-in nodes [:Mesh_7 :geometry]) :material (j/get materials "Material.008")}]]]]]))
+      [:mesh
+       [:boxGeometry {:args [1 1 1]}]
+       [:meshStandardMaterial {:color "orange"}]]]]))
+
 
 (defn- wheel [props]
   (let [wheel* (:ref props)
@@ -227,33 +212,33 @@
 
 (defn main-panel []
   (r/create-class
-    {:component-did-mount (fn []
-                            (js/window.addEventListener "keyup" #(handle-key % false))
-                            (js/window.addEventListener "keydown" #(handle-key % true)))
-     :reagent-render (fn []
-                       [canvas
-                        {:dpr [1 1.5]
-                         :shadows true
-                         :camera {:position [0 5 15] :near 1 :far 200 :fov 50}}
-                        [:fog {:attach "fog" :args ["white" 0 350]}]
-                        [sky {:sun-position [100 10 100] :scale 1000}]
-                        [:ambientLight {:intensity 0.1}]
-                        [physics
-                         {:broadphase "SAP"
-                          :contactEquationRelaxation 4
-                          :friction 1e-3
-                          :allowSleep true}
-                         [:f> plane {:rotation [(/ (- js/Math.PI) 2) 0 0]
-                                     :userData {:id "floor"}}]
-                         [:f> vehicle {:rotation [0 (/ js/Math.PI 2) 0]
-                                       :position [0 2 0]
-                                       :angularVelocity [0 0.5 0]
-                                       :wheelRadius 0.3}]]
-                        [suspense
-                         {:fallback nil}
-                         [:f> track
-                          {:position [80 0 -170]
-                           :rotation [0 0 0]
-                           :scale 20}]
-                         [environment
-                          {:preset "night"}]]])}))
+   {:component-did-mount (fn []
+                           (js/window.addEventListener "keyup" #(handle-key % false))
+                           (js/window.addEventListener "keydown" #(handle-key % true)))
+    :reagent-render (fn []
+                      [canvas
+                       {:dpr [1 1.5]
+                        :shadows true
+                        :camera {:position [0 5 15] :near 1 :far 200 :fov 50}}
+                       [:fog {:attach "fog" :args ["white" 0 350]}]
+                       [sky {:sun-position [100 10 100] :scale 1000}]
+                       [:ambientLight {:intensity 0.1}]
+                       [physics
+                        {:broadphase "SAP"
+                         :contactEquationRelaxation 4
+                         :friction 1e-3
+                         :allowSleep true}
+                        [:f> plane {:rotation [(/ (- js/Math.PI) 2) 0 0]
+                                    :userData {:id "floor"}}]
+                        [:f> vehicle {:rotation [0 (/ js/Math.PI 2) 0]
+                                      :position [0 2 0]
+                                      :angularVelocity [0 0.5 0]
+                                      :wheelRadius 0.3}]]])}))
+                       ;; [suspense
+                       ;;  {:fallback nil}
+                       ;;  [:f> track
+                       ;;   {:position [80 0 -170]
+                       ;;    :rotation [0 0 0]
+                       ;;    :scale 20}]
+                       ;;  [environment
+                       ;;   {:preset "night"}]]])}))
