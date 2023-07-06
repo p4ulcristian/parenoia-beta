@@ -1,7 +1,7 @@
 (ns racing-game-cljs.parenoia.view
   (:require ["regenerator-runtime"]
             ["@react-three/cannon" :refer [Physics usePlane useBox useCylinder useRaycastVehicle]]
-            ["@react-three/drei" :refer [useGLTF Sky Environment PerspectiveCamera Html Box, OrbitControls
+            ["@react-three/drei" :refer [useGLTF Sky Environment PerspectiveCamera Html RoundedBox Box, OrbitControls
                                          useBoundingBox]]
             ["@react-three/fiber" :refer [Canvas useFrame]]
             ["react" :refer [useRef Suspense]]
@@ -25,22 +25,30 @@
 
 
 (defn box []
-
-  [:> Box {:args [1 1 1] :position [0 0 0]}
-        ;[:meshStandardMaterial {:color "orange"}]
-   [:> Html
-    {:occlude true
-          ;:distanceFactor  1.5
-     :position  [0, 0, 0.51]
-     :transform true
-     :receiveShadow true
-     :castShadow true
-     :style {:height "100%"
-             :width "100%"}}
-    [:div
-     {:style {:height "100%"
-              :background :red}}
-     "hello"]]])
+  [:<>
+   [:> Suspense {:fallback nil}
+    [:group
+     [:mesh {:position [0 0 0]}
+      [:boxGeometry {:args [1 1 1]}]
+      [:meshStandardMaterial {:color "hotpink"}]]]
+    [:group
+     [:mesh {:position [1 1 0]}
+      [:boxGeometry {:args [1 1 1]}]
+      [:meshStandardMaterial {:color "yellow"}]
+      [:> Html
+       {:occlude true
+        ;:distanceFactor  1.5
+        :position  [0, 0, 0.51]
+        :geometry [:boxGeometry {:args [1 1 1]}]
+        :transform true
+        :receiveShadow true
+        :castShadow true
+        :style {:height "100%"
+                :width "100%"
+                :background :red}}
+       [:div
+        {:style {:height "100%"}}
+        "hello"]]]]]])
 
 
 
