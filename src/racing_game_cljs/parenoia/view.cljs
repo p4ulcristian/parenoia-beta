@@ -53,8 +53,11 @@
             :border "1px solid rgba(255,0,0,0.3)"}}
    [:div
     {:style {:height "100%"
-             :pointer-events :none}}
-    text]])
+             :pointer-events :none
+             :display :flex
+             :justify-content :center
+             :align-items :center}}
+    [:div text]]])
 
 (defn box [{:keys [text position size color]}]
   (let [box-ref (useRef)
@@ -81,15 +84,11 @@
                             :height html-height}]]]]))
 
 
-
-
-
-
 (defn lights []
   [:<>
-   [:pointLight {:color "yellow"
+   [:pointLight {:color "white"
                  :intensity 0.6
-                 :position [3, 5, 3]
+                 :position [0, 3, -5]
                  :castShadow true}]
    [:ambientLight {:args ["white" 0.2]
                    :castShadow true}]
@@ -104,7 +103,7 @@
 (defn view []
 
   [canvas
-   {:dpr [1 1.5]
+   {:dpr [1 2]
     :shadows true
     :camera {:position [0 0 7] :near 0.1 :far 2000 :fov 50}}
   ;;  [:fog {:attach "fog" :args ["white" 0 350]}]
@@ -112,27 +111,27 @@
    ;[:ambientLight {:intensity 0.1}]
    [:> OrbitControls {:makeDefault true}]
    [:f> lights]
-   [:mesh {:rotation [(- 1.5) 0 0] :position [0 0 0]
+   [:mesh {:rotation [(- 1.5) 0 0] :position [0 -1.5 0]
            :receiveShadow true}
     [:planeGeometry {:args [7 7]}]
 
     [:meshPhongMaterial {:color "blue"}]]
-   [:f> box {:text "Hello there"
+   [:f> box {:text "Wow"
+             :size [1 1]
+             :position [-1.5 1 -0.5]
+             :color "pink"}]
+   [:f> box {:text "cubes"
              :size [1 2]
              :position [0 0 0]
              :color "yellow"}]
-   [:f> box {:text "mizu"
+   [:f> box {:text "such"
              :size [1 1]
              :position [0.5 2 0]
              :color "deeppink"}]
-   [:f> box {:text "mizu"
+   [:f> box {:text "bro"
              :size [1 1]
              :position [-1.5 -1 0]
-             :color "red"}]
-   [:f> box {:text "mizu"
-             :size [1 1]
-             :position [-1.5 1 -1]
-             :color "pink"}]])
+             :color "red"}]])
 
     ;; [:f> plane {:rotation [(/ (- js/Math.PI) 2) 0 0]
     ;;             :userData {:id "floor"}}]
