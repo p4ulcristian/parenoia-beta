@@ -69,12 +69,13 @@
                #js [])
     [:<>
      [:> Suspense {:fallback nil}
-
       [:group {:position position}
-       [:mesh {:ref box-ref}
-        [:> RoundedBox {:args [box-width box-height 1]}
-         [:meshLambertMaterial {:color color
-                                :attach "material"}]]]
+       [:mesh {:ref box-ref :castShadow true :receiveShadow true}
+        [:> RoundedBox {:args [box-width box-height 1] :castShadow true :receiveShadow true}
+         [:meshPhongMaterial {:color color
+                              :attach "material"
+                              :roughness 1
+                              :metalness 0.1}]]]
        [:f> html-component {:text  text
                             :width html-width
                             :height html-height}]]]]))
@@ -86,12 +87,18 @@
 
 (defn lights []
   [:<>
-   [:pointLight {:color "white"
+   [:pointLight {:color "yellow"
                  :intensity 0.6
-                 :position [-10, -2, 5]}]
-   [:pointLight {:color "white"
-                 :intensity 0.3
-                 :position [5 , 5, -5]}]])
+                 :position [3, 5, 3]
+                 :castShadow true}]
+   [:ambientLight {:args ["white" 0.2]
+                   :castShadow true}]
+
+   [:spotLight {:args ["white" 1]
+                :position [-2 2 0]
+                :castShadow true}]])
+
+
 
 
 (defn view []
@@ -101,10 +108,15 @@
     :shadows true
     :camera {:position [0 0 7] :near 0.1 :far 2000 :fov 50}}
   ;;  [:fog {:attach "fog" :args ["white" 0 350]}]
-   [sky {:sun-position [100 10 100] :scale 1000}]
+  ; [sky {:sun-position [100 10 100] :scale 1000}]
    ;[:ambientLight {:intensity 0.1}]
    [:> OrbitControls {:makeDefault true}]
    [:f> lights]
+   [:mesh {:rotation [(- 1.5) 0 0] :position [0 0 0]
+           :receiveShadow true}
+    [:planeGeometry {:args [7 7]}]
+
+    [:meshPhongMaterial {:color "blue"}]]
    [:f> box {:text "Hello there"
              :size [1 2]
              :position [0 0 0]
@@ -116,7 +128,11 @@
    [:f> box {:text "mizu"
              :size [1 1]
              :position [-1.5 -1 0]
-             :color "red"}]])
+             :color "red"}]
+   [:f> box {:text "mizu"
+             :size [1 1]
+             :position [-1.5 1 -1]
+             :color "pink"}]])
 
     ;; [:f> plane {:rotation [(/ (- js/Math.PI) 2) 0 0]
     ;;             :userData {:id "floor"}}]
