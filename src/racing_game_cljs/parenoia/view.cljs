@@ -38,8 +38,29 @@
     pixelSize))
 
 
-(defn box []
-  (let [box-ref (useRef)]
+(defn html-component [{:keys [text width height]}]
+  [:> Html
+   {:occlude true
+    :distanceFactor  3.8
+    :position  [0, 0, 0.51]
+    :transform true
+    :class "html-element"
+    :style {:height height
+            :width width
+            :border-radius "10px"
+            :padding "10px"
+            :pointer-events :none
+            :border "1px solid rgba(255,0,0,0.3)"}}
+   [:div
+    {:style {:height "100%"
+             :pointer-events :none}}
+    text]])
+
+(defn box [{:keys [text position size color]}]
+  (let [box-ref (useRef)
+        [box-width box-height] size
+        html-width (* 100 box-width)
+        html-height (* 100 box-height)]
     (useEffect (fn []
                  (let []
 
@@ -49,37 +70,28 @@
     [:<>
      [:> Suspense {:fallback nil}
 
-      [:group {:position [1 1 0]}
+      [:group {:position position}
        [:mesh {:ref box-ref}
-        [:> RoundedBox {:args [1 1 1]}]
-        [:meshPhysicalMaterial {:color "yellow"}]]
-      ;[:mesh {:geometry  [:boxGeometry {:args [1 1 1]}]}]
-
-       [:> Html
-        {:occlude true
-         :distanceFactor  3.8
-         :position  [0, 0, 0.51]
-         :transform true
-         :receiveShadow true
-         :castShadow true
-         :class "html-element"
-         :style {:height "100px"
-                 :width "100px"
-                 :border-radius "10px"
-                 :padding "10px"
-                 :pointer-events :none
-                 :border "1px solid rgba(255,0,0,0.3)"}}
-        [:div
-         {:style {:height "100%"
-                  :pointer-events :none}}
-         "hello"]]]]]))
+        [:> RoundedBox {:args [box-width box-height 1]}
+         [:meshLambertMaterial {:color color
+                                :attach "material"}]]]
+       [:f> html-component {:text  text
+                            :width html-width
+                            :height html-height}]]]]))
 
 
 
 
 
 
-
+(defn lights []
+  [:<>
+   [:pointLight {:color "white"
+                 :intensity 0.6
+                 :position [-10, -2, 5]}]
+   [:pointLight {:color "white"
+                 :intensity 0.3
+                 :position [5 , 5, -5]}]])
 
 
 (defn view []
@@ -87,15 +99,24 @@
   [canvas
    {:dpr [1 1.5]
     :shadows true
-    :camera {:position [0 0 50] :near 0.1 :far 2000 :fov 50}}
+    :camera {:position [0 0 7] :near 0.1 :far 2000 :fov 50}}
   ;;  [:fog {:attach "fog" :args ["white" 0 350]}]
    [sky {:sun-position [100 10 100] :scale 1000}]
-   [:ambientLight {:intensity 0.1}]
+   ;[:ambientLight {:intensity 0.1}]
    [:> OrbitControls {:makeDefault true}]
-   [:pointLight {:color "white"
-                 :intensity 0.7
-                 :position [0, 0, 5]}]
-   [:f> box]])
+   [:f> lights]
+   [:f> box {:text "Hello there"
+             :size [1 2]
+             :position [0 0 0]
+             :color "yellow"}]
+   [:f> box {:text "mizu"
+             :size [1 1]
+             :position [0.5 2 0]
+             :color "deeppink"}]
+   [:f> box {:text "mizu"
+             :size [1 1]
+             :position [-1.5 -1 0]
+             :color "red"}]])
 
     ;; [:f> plane {:rotation [(/ (- js/Math.PI) 2) 0 0]
     ;;             :userData {:id "floor"}}]
