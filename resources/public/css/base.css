@@ -18,3 +18,7 @@ body {
   color: white;
   font-family: 'Inter var', sans-serif;
 }
+
+
+div:has(> div.html-element) {
+  pointer-events: none !important; }
